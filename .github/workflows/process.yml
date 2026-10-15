@@ -1,0 +1,22 @@
+name: process-eeg
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install tools
+        run: pip install osfclient
+      - name: Process new files
+        env:
+          OSF_TOKEN: ${{ secrets.OSF_TOKEN }}
+          OSF_PROJECT: ${{ vars.OSF_PROJECT }}
+        run: python code/process_new.py
